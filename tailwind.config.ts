@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,6 +62,14 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				// Custom colors based on the logo
+				insights: {
+					orange: '#E84D1C', // Main orange from the logo
+					cream: '#F8F2E6', // Background cream color
+					dark: '#1A1F2C', // Dark text color
+					light: '#FFFFFF', // Light text color
+					gray: '#8E9196', // Neutral gray
 				}
 			},
 			borderRadius: {
@@ -84,11 +93,21 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'pulse-slow': {
+					'0%, 100%': { opacity: '1' },
+					'50%': { opacity: '0.5' },
+				},
+				'fade-in': {
+					'0%': { opacity: '0', transform: 'translateY(10px)' },
+					'100%': { opacity: '1', transform: 'translateY(0)' },
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'pulse-slow': 'pulse-slow 3s ease-in-out infinite',
+				'fade-in': 'fade-in 0.5s ease-out forwards',
 			}
 		}
 	},
