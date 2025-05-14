@@ -115,7 +115,7 @@ const ForCameraOwners = () => {
                 size="lg"
                 className="bg-insights-orange hover:bg-insights-orange/90 text-white font-medium px-8 py-6 rounded-md text-lg"
               >
-                <Link to="/contact">Start Earning Now</Link>
+                <Link to="/login">Start Earning Now</Link>
               </Button>
             </div>
           </div>
@@ -335,7 +335,7 @@ const ForCameraOwners = () => {
                   asChild
                   className="bg-white hover:bg-white/90 text-insights-orange font-medium px-8 py-6 rounded-md text-lg"
                 >
-                  <Link to="/contact">Sign Up Now</Link>
+                  <Link to="/login">Sign Up Now</Link>
                 </Button>
                 <Button
                   asChild

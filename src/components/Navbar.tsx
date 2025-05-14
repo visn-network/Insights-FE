@@ -79,7 +79,7 @@ const Navbar = () => {
             asChild
             className="bg-insights-orange hover:bg-insights-orange/90 text-white"
           >
-            <Link to="/contact">Get Started</Link>
+            <Link to="/login">Get Started</Link>
           </Button>
         </div>
 
@@ -115,7 +115,7 @@ const Navbar = () => {
                 asChild
                 className="bg-insights-orange hover:bg-insights-orange/90 text-white w-full mt-2"
               >
-                <Link to="/contact" onClick={() => setIsMobileMenuOpen(false)}>
+                <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>
                   Get Started
                 </Link>
               </Button>
