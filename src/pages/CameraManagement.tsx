@@ -86,10 +86,15 @@ export default function CameraManagement() {
   });
 
   const onSubmit = (values: CameraFormValues) => {
-    // Add new camera
+    // Add new camera - ensure all required properties are explicitly provided
     const newCamera: Camera = {
       id: Math.random().toString(36).substring(7),
-      ...values,
+      name: values.name,
+      location: values.location,
+      type: values.type,
+      description: values.description,
+      resolution: values.resolution,
+      privacyLevel: values.privacyLevel,
       isActive: true,
     };
     
