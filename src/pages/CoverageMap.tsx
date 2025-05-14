@@ -6,116 +6,177 @@ import { Camera, Search, MapPin } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CameraMapMarker from "@/components/CameraMapMarker";
+import { 
+  Carousel,
+  CarouselContent, 
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious 
+} from "@/components/ui/carousel";
+import { Card, CardContent } from "@/components/ui/card";
+
+interface MapRegion {
+  id: number;
+  name: string;
+  imageUrl: string;
+  cameraCount: number;
+  cameras: CameraData[];
+}
+
+interface CameraData {
+  id: number;
+  title: string;
+  position: { top: string; left: string };
+  status: "active" | "inactive";
+  type: string;
+  coverage: string;
+}
 
 const CoverageMap = () => {
   const [searchValue, setSearchValue] = useState("");
+  const [activeRegion, setActiveRegion] = useState<number>(1);
 
-  // Simulated camera data points
-  const cameras = [
-    { 
-      id: 1, 
-      title: "Downtown Hub 1", 
-      position: { top: "35%", left: "28%" }, 
-      status: "active" as const, 
-      type: "High-res PTZ",
-      coverage: "120° field of view"
+  // Map regions data
+  const mapRegions: MapRegion[] = [
+    {
+      id: 1,
+      name: "Downtown Metro",
+      imageUrl: "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?q=80&w=2144&auto=format&fit=crop",
+      cameraCount: 42,
+      cameras: [
+        { 
+          id: 1, 
+          title: "Downtown Hub 1", 
+          position: { top: "35%", left: "28%" }, 
+          status: "active", 
+          type: "High-res PTZ",
+          coverage: "120° field of view"
+        },
+        { 
+          id: 2, 
+          title: "Market District", 
+          position: { top: "42%", left: "33%" }, 
+          status: "active", 
+          type: "Fixed 4K",
+          coverage: "90° field of view"
+        },
+        { 
+          id: 3, 
+          title: "Waterfront", 
+          position: { top: "55%", left: "22%" }, 
+          status: "active", 
+          type: "Panoramic",
+          coverage: "180° field of view"
+        },
+        { 
+          id: 4, 
+          title: "Tech Park", 
+          position: { top: "38%", left: "45%" }, 
+          status: "active", 
+          type: "Standard HD",
+          coverage: "90° field of view"
+        },
+      ]
     },
-    { 
-      id: 2, 
-      title: "Market District", 
-      position: { top: "42%", left: "33%" }, 
-      status: "active" as const, 
-      type: "Fixed 4K",
-      coverage: "90° field of view"
+    {
+      id: 2,
+      name: "Harbor District",
+      imageUrl: "https://images.unsplash.com/photo-1506146332389-18140dc7b2fb?q=80&w=2154&auto=format&fit=crop",
+      cameraCount: 27,
+      cameras: [
+        { 
+          id: 5, 
+          title: "Harbor Entrance", 
+          position: { top: "60%", left: "38%" }, 
+          status: "active", 
+          type: "High-res Fixed",
+          coverage: "120° field of view"
+        },
+        { 
+          id: 6, 
+          title: "Marina Bay", 
+          position: { top: "48%", left: "52%" }, 
+          status: "active", 
+          type: "Multi-directional",
+          coverage: "270° field of view"
+        },
+        { 
+          id: 7, 
+          title: "Pier 39", 
+          position: { top: "65%", left: "55%" }, 
+          status: "inactive", 
+          type: "Standard HD",
+          coverage: "120° field of view"
+        },
+      ]
     },
-    { 
-      id: 3, 
-      title: "Waterfront", 
-      position: { top: "55%", left: "22%" }, 
-      status: "active" as const, 
-      type: "Panoramic",
-      coverage: "180° field of view"
+    {
+      id: 3,
+      name: "Business District",
+      imageUrl: "https://images.unsplash.com/photo-1573108724029-4c46571d6490?q=80&w=2069&auto=format&fit=crop",
+      cameraCount: 35,
+      cameras: [
+        { 
+          id: 8, 
+          title: "Financial Center", 
+          position: { top: "42%", left: "48%" }, 
+          status: "active", 
+          type: "Thermal",
+          coverage: "90° field of view"
+        },
+        { 
+          id: 9, 
+          title: "Central Plaza", 
+          position: { top: "35%", left: "60%" }, 
+          status: "active", 
+          type: "PTZ HD",
+          coverage: "360° field of view"
+        },
+        { 
+          id: 10, 
+          title: "Corporate Park", 
+          position: { top: "58%", left: "33%" }, 
+          status: "active", 
+          type: "4K Fixed",
+          coverage: "120° field of view"
+        },
+      ]
     },
-    { 
-      id: 4, 
-      title: "Tech Park", 
-      position: { top: "38%", left: "45%" }, 
-      status: "active" as const, 
-      type: "Standard HD",
-      coverage: "90° field of view"
-    },
-    { 
-      id: 5, 
-      title: "University Area", 
-      position: { top: "60%", left: "38%" }, 
-      status: "active" as const, 
-      type: "High-res Fixed",
-      coverage: "120° field of view"
-    },
-    { 
-      id: 6, 
-      title: "Shopping Center", 
-      position: { top: "48%", left: "52%" }, 
-      status: "active" as const, 
-      type: "Multi-directional",
-      coverage: "270° field of view"
-    },
-    { 
-      id: 7, 
-      title: "Transport Hub", 
-      position: { top: "65%", left: "55%" }, 
-      status: "inactive" as const, 
-      type: "Standard HD",
-      coverage: "120° field of view"
-    },
-    { 
-      id: 8, 
-      title: "Industrial Zone", 
-      position: { top: "72%", left: "48%" }, 
-      status: "active" as const, 
-      type: "Thermal",
-      coverage: "90° field of view"
-    },
-    { 
-      id: 9, 
-      title: "Central Park", 
-      position: { top: "40%", left: "60%" }, 
-      status: "active" as const, 
-      type: "PTZ HD",
-      coverage: "360° field of view"
-    },
-    { 
-      id: 10, 
-      title: "Retail District", 
-      position: { top: "58%", left: "68%" }, 
-      status: "active" as const, 
-      type: "4K Fixed",
-      coverage: "120° field of view"
-    },
-    { 
-      id: 11, 
-      title: "Metro Station", 
-      position: { top: "68%", left: "30%" }, 
-      status: "active" as const, 
-      type: "PTZ Standard",
-      coverage: "270° field of view"
-    },
-    { 
-      id: 12, 
-      title: "Office Complex", 
-      position: { top: "33%", left: "75%" }, 
-      status: "inactive" as const, 
-      type: "Fixed HD",
-      coverage: "90° field of view"
+    {
+      id: 4,
+      name: "Residential Area",
+      imageUrl: "https://images.unsplash.com/photo-1625573803424-191a5ab416c2?q=80&w=2070&auto=format&fit=crop",
+      cameraCount: 19,
+      cameras: [
+        { 
+          id: 11, 
+          title: "Community Park", 
+          position: { top: "38%", left: "25%" }, 
+          status: "active", 
+          type: "PTZ Standard",
+          coverage: "270° field of view"
+        },
+        { 
+          id: 12, 
+          title: "Shopping Center", 
+          position: { top: "53%", left: "45%" }, 
+          status: "inactive", 
+          type: "Fixed HD",
+          coverage: "90° field of view"
+        },
+      ]
     },
   ];
 
+  // Get active region data
+  const activeRegionData = mapRegions.find(region => region.id === activeRegion) || mapRegions[0];
+
   // Filter cameras by search term
-  const filteredCameras = cameras.filter((camera) => 
+  const filteredCameras = activeRegionData.cameras.filter((camera) => 
     camera.title.toLowerCase().includes(searchValue.toLowerCase())
   );
 
-  const activeCount = cameras.filter(c => c.status === "active").length;
+  const activeCount = activeRegionData.cameras.filter(c => c.status === "active").length;
 
   return (
     <>
@@ -127,7 +188,7 @@ const CoverageMap = () => {
               <div>
                 <h1 className="text-3xl md:text-4xl font-bold mb-2">Coverage Map</h1>
                 <p className="text-white/80">
-                  Explore our network of connected cameras across the city.
+                  Explore our network of connected cameras across different regions.
                 </p>
               </div>
               
@@ -150,6 +211,63 @@ const CoverageMap = () => {
           </div>
         </section>
 
+        <section className="py-6 bg-insights-cream">
+          <div className="container mx-auto px-4">
+            <h2 className="text-xl font-semibold text-insights-dark mb-4">Featured Regions</h2>
+            <Carousel
+              opts={{
+                align: "start",
+                loop: true,
+              }}
+              className="w-full"
+            >
+              <CarouselContent className="-ml-2 md:-ml-4">
+                {mapRegions.map((region) => (
+                  <CarouselItem key={region.id} className="pl-2 md:pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4">
+                    <Card 
+                      className={`cursor-pointer transition-all duration-200 overflow-hidden ${
+                        activeRegion === region.id 
+                          ? "ring-2 ring-insights-orange shadow-md" 
+                          : "hover:shadow-md"
+                      }`}
+                      onClick={() => setActiveRegion(region.id)}
+                    >
+                      <CardContent className="p-0 relative">
+                        <div className="relative h-40 overflow-hidden">
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10" />
+                          <img 
+                            src={region.imageUrl} 
+                            alt={region.name} 
+                            className="w-full h-full object-cover"
+                          />
+                          <div className="absolute bottom-3 left-3 z-20 text-white">
+                            <h3 className="font-semibold">{region.name}</h3>
+                            <div className="flex items-center text-sm mt-1">
+                              <Camera className="w-4 h-4 mr-1 text-insights-orange" />
+                              <span>{region.cameraCount} cameras</span>
+                            </div>
+                          </div>
+                          {activeRegion === region.id && (
+                            <div className="absolute top-3 right-3 z-20">
+                              <div className="bg-insights-orange text-white text-xs px-2 py-1 rounded-full">
+                                Active
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <div className="flex justify-end gap-2 mt-4">
+                <CarouselPrevious className="relative static left-auto transform-none" />
+                <CarouselNext className="relative static right-auto transform-none" />
+              </div>
+            </Carousel>
+          </div>
+        </section>
+
         <section className="py-8 bg-insights-cream">
           <div className="container mx-auto px-4">
             <div className="bg-white p-4 md:p-6 rounded-lg shadow-md">
@@ -159,22 +277,28 @@ const CoverageMap = () => {
                   <p className="text-2xl font-bold text-insights-dark">{activeCount}</p>
                 </div>
                 <div className="bg-gray-100 p-4 rounded-md text-center">
-                  <p className="text-sm text-insights-dark/70 mb-1">Total Coverage</p>
-                  <p className="text-2xl font-bold text-insights-dark">4 Cities</p>
+                  <p className="text-sm text-insights-dark/70 mb-1">Region</p>
+                  <p className="text-2xl font-bold text-insights-dark">{activeRegionData.name}</p>
                 </div>
                 <div className="bg-gray-100 p-4 rounded-md text-center">
                   <p className="text-sm text-insights-dark/70 mb-1">Data Points</p>
-                  <p className="text-2xl font-bold text-insights-dark">14.2M</p>
+                  <p className="text-2xl font-bold text-insights-dark">8.7K</p>
                 </div>
                 <div className="bg-gray-100 p-4 rounded-md text-center">
-                  <p className="text-sm text-insights-dark/70 mb-1">Active Users</p>
-                  <p className="text-2xl font-bold text-insights-dark">287</p>
+                  <p className="text-sm text-insights-dark/70 mb-1">Coverage</p>
+                  <p className="text-2xl font-bold text-insights-dark">92%</p>
                 </div>
               </div>
 
               <div className="relative w-full h-[60vh] bg-gray-100 rounded-lg overflow-hidden mb-6">
-                {/* Grayscale map background */}
-                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2940&auto=format&fit=crop')] bg-cover bg-center grayscale opacity-30"></div>
+                {/* Real map background */}
+                <div className="absolute inset-0">
+                  <img 
+                    src={activeRegionData.imageUrl} 
+                    alt={activeRegionData.name}
+                    className="w-full h-full object-cover grayscale-[30%]"
+                  />
+                </div>
                 
                 {/* Map overlay gradient */}
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white/20"></div>
@@ -183,7 +307,7 @@ const CoverageMap = () => {
                 <div className="absolute top-4 left-4 bg-white/90 p-3 rounded-md shadow-md">
                   <div className="flex items-center">
                     <Camera size={18} className="text-insights-orange mr-2" />
-                    <span className="text-insights-dark font-medium">Camera Network</span>
+                    <span className="text-insights-dark font-medium">{activeRegionData.name} Network</span>
                   </div>
                   <p className="text-xs text-insights-dark/70 mt-1">
                     Showing {filteredCameras.length} cameras in the network
@@ -239,7 +363,7 @@ const CoverageMap = () => {
               </p>
               <div className="flex flex-col sm:flex-row justify-center gap-4">
                 <Button asChild className="bg-insights-orange hover:bg-insights-orange/90 text-white">
-                  <a href="/for-camera-owners">Register Your Camera</a>
+                  <a href="/login">Register Your Camera</a>
                 </Button>
                 <Button asChild variant="outline" className="border-insights-orange text-insights-orange hover:bg-insights-orange/5">
                   <a href="/for-business">Access Data Insights</a>
