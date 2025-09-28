@@ -1,4 +1,4 @@
-# Welcome to your Insights
+# Insights Frontend Repo
 
 **Use your preferred IDE**
 
